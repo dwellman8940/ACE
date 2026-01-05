@@ -271,7 +271,7 @@ namespace ACE.Server.Managers
             var timeRealAvg = Math.Min(RealCap, RealCap);
             var timeGameAvg = Math.Min(GameCap, GameCap);
 
-            var allegianceVassalsForMaxPassup = (double)Math.Min(1, PropertyManager.GetLong("allegiance_xp_vassals_for_max_passup").Item);
+            var allegianceVassalsForMaxPassup = (double)Math.Max(1, PropertyManager.GetLong("allegiance_xp_vassals_for_max_passup").Item);
             var vassalFactor = Math.Min(patronNode.TotalVassals / allegianceVassalsForMaxPassup, 1.0f);
 
             var factor1 = direct ? 50.0f : 16.0f;
