@@ -277,7 +277,7 @@ namespace ACE.Server.WorldObjects
                 if (playerDamager.QuestManager.HasQuest(killQuest))
                 {
                     TryHandleKillTask(playerDamager, killQuest, killTaskCredits, cap);
-                    log.Info($"OnDeath_HandleKillTask 1 - Quest: {killQuest}, Player: {playerDamager}");
+                    log.Info($"OnDeath_HandleKillTask 1 - Quest: {killQuest}, Player: {playerDamager.DisplayName}");
                 }
                 // check option that requires killer to have killtask to pass to fellows
                 else if (!PropertyManager.GetBool("fellow_kt_killer").Item)   
@@ -293,7 +293,7 @@ namespace ACE.Server.WorldObjects
 
                 foreach (var fellow in fellows)
                 {
-                    log.Info($"OnDeath_HandleKillTask 2 - Quest: { killQuest}, Fellow: {fellow}, HadQuest: {fellow.QuestManager.HasQuest(killQuest)}");
+                    log.Info($"OnDeath_HandleKillTask 2 - Quest: { killQuest}, Fellow: {fellow.DisplayName}, HadQuest: {fellow.QuestManager.HasQuest(killQuest)}");
                     if (fellow.QuestManager.HasQuest(killQuest))
                         TryHandleKillTask(fellow, killQuest, killTaskCredits, cap);
                 }
@@ -313,7 +313,7 @@ namespace ACE.Server.WorldObjects
                 killTaskCredits[player.Guid] = 1;
 
             player.QuestManager.HandleKillTask(killTask, this);
-            log.Info($"TryHandleKillTask - Quest: {killTask}, Player: {player}");
+            log.Info($"TryHandleKillTask - Quest: {killTask}, Player: {player.DisplayName}");
 
             return true;
         }
