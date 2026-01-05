@@ -644,6 +644,10 @@ namespace ACE.Server.Entity
             if (xpType == XpType.Quest)
                 return 1.0f;
 
+            var fellowshipRewardsIgnoreDistance = PropertyManager.GetBool("fellowship_rewards_ignore_distance").Item;
+            if (fellowshipRewardsIgnoreDistance)
+                return 1.0f;
+
             // https://asheron.fandom.com/wiki/Announcements_-_2004/01_-_Mirror,_Mirror#Rollout_Article
 
             // If they are indoors while you are outdoors, or vice-versa.
@@ -675,6 +679,7 @@ namespace ACE.Server.Entity
             var fellows = GetFellowshipMembers();
 
             var landblockRange = PropertyManager.GetBool("fellow_kt_landblock").Item;
+            var fellowshipRewardsIgnoreDistance = PropertyManager.GetBool("fellowship_rewards_ignore_distance").Item;
 
             var results = new List<Player>();
 
@@ -683,7 +688,7 @@ namespace ACE.Server.Entity
                 if (player == fellow && !includeSelf)
                     continue;
 
-                var shareable = player == fellow || landblockRange ?
+                var shareable = fellowshipRewardsIgnoreDistance || player == fellow || landblockRange ?
                     player.CurrentLandblock == fellow.CurrentLandblock || player.Location.DistanceTo(fellow.Location) <= 192.0f :
                     player.Location.Distance2D(fellow.Location) <= player.CurrentRadarRange && player.ObjMaint.VisibleObjectsContainsKey(fellow.Guid.Full);      // 2d visible distance / radar range?
 
