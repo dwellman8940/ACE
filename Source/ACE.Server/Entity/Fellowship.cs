@@ -688,9 +688,9 @@ namespace ACE.Server.Entity
                 if (player == fellow && !includeSelf)
                     continue;
 
-                var shareable = fellowshipRewardsIgnoreDistance || player == fellow || landblockRange ?
+                var shareable = fellowshipRewardsIgnoreDistance || (player == fellow || landblockRange ?
                     player.CurrentLandblock == fellow.CurrentLandblock || player.Location.DistanceTo(fellow.Location) <= 192.0f :
-                    player.Location.Distance2D(fellow.Location) <= player.CurrentRadarRange && player.ObjMaint.VisibleObjectsContainsKey(fellow.Guid.Full);      // 2d visible distance / radar range?
+                    player.Location.Distance2D(fellow.Location) <= player.CurrentRadarRange && player.ObjMaint.VisibleObjectsContainsKey(fellow.Guid.Full));      // 2d visible distance / radar range?
 
                 if (shareable)
                     results.Add(fellow);
