@@ -395,6 +395,18 @@ namespace ACE.Server.WorldObjects
             if (moveSpeed == 0) moveSpeed = 2.5f;
             var scale = ObjScale ?? 1.0f;
 
+            if (this is Player player)
+            {
+                if (player.HeritageGroup == HeritageGroup.Lugian)
+                {
+                    if (!ObjScale.HasValue)
+                    {
+                        // Removed lugian scale via admin commands, repply the runrate scaling here
+                        scale = 1.3f;
+                    }
+                }
+            }
+
             RunRate = GetRunRate();
 
             MoveSpeed = moveSpeed * RunRate * scale;
