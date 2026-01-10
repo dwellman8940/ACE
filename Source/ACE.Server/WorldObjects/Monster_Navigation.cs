@@ -67,9 +67,23 @@ namespace ACE.Server.WorldObjects
         /// <summary>
         /// Fields for enhanced stuck detection
         /// </summary>
-        public Vector3 LastStuckCheckPosition;
+        public Vector3? LastStuckCheckPosition;
         public int StuckCounter = 0;
         public double LastStuckCheckTime;
+        public double LastCancelStuckCheckTime;
+
+        /// <summary>
+        /// Resets stuck logic due to an external event like combat
+        /// </summary>
+        public void ResetStuck()
+        {
+            StuckCounter = 0;
+            LastStuckCheckPosition = null;
+            // Don't check for stuck for a bit
+            LastStuckCheckTime = Timers.RunningTime;
+            LastCancelStuckCheckTime = Timers.RunningTime;
+        }
+
 
         /// <summary>
         /// Starts the process of monster turning towards target
@@ -254,8 +268,19 @@ namespace ACE.Server.WorldObjects
                 return;
             }
 
+            if (AiImmobile)
+            {
+                return;
+            }
+
+            if (Timers.RunningTime - LastCancelStuckCheckTime < 8.0f)
+            {
+                // Avoid checking stuck for awhile if it was reset externally
+                return;
+            }
+            
             // Standard stuck check from MoveToManager
-            if (!AiImmobile && PhysicsObj.MovementManager.MoveToManager.FailProgressCount > 0 && Timers.RunningTime > NextCancelTime)
+            if (PhysicsObj.MovementManager.MoveToManager.FailProgressCount > 0 && Timers.RunningTime > NextCancelTime)
             {
                 // Instead of just canceling, also increment stuck counter
                 StuckCounter++;
@@ -274,13 +299,13 @@ namespace ACE.Server.WorldObjects
             }
             
             // Additional stuck detection - check if position hasn't changed much over time
-            if (!AiImmobile && Timers.RunningTime - LastStuckCheckTime >= 5.0) // Check every 5 seconds
+            if (Timers.RunningTime - LastStuckCheckTime >= 5.0) // Check every 5 seconds
             {
                 var currentPos = Location.ToGlobal();
                 
-                if (LastStuckCheckPosition != Vector3.Zero)
+                if (LastStuckCheckPosition.HasValue)
                 {
-                    var distMoved = Vector3.Distance(currentPos, LastStuckCheckPosition);
+                    var distMoved = Vector3.Distance(currentPos, LastStuckCheckPosition.Value);
                     
                     // If barely moved in the last 5 seconds but still trying to move
                     if (distMoved < 1.5f && IsMoving)

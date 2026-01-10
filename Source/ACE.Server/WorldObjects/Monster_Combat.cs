@@ -403,10 +403,16 @@ namespace ACE.Server.WorldObjects
                          CancelMoveTo(); 
                     }
 
+                    // Dealing damage resets any stuck state on the attacker, assumption that a successful attack means that the attacker is in an ok spot, maybe not true for DoTs
+                    attacker.ResetStuck();
+
                     AttackTarget = attacker;
                     WakeUp(false); // Wake up, set state to Awake
                 }
             }
+
+            // Taking damage resets stuck to avoid leashing when in active combat, dots probably need an exception
+            ResetStuck();
 
             if (Health.Current <= 0)
             {

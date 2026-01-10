@@ -291,6 +291,13 @@ namespace ACE.Server.WorldObjects
             if (target != null && (CurrentLandblock == null || target.CurrentLandblock == null || CurrentLandblock.CurrentLandblockGroup != target.CurrentLandblock.CurrentLandblockGroup))
                 return;
 
+            // Regardless of the result, the attacker and target can try to cast on each other, reset stuck state
+            if (target is Creature creatureTarget)
+            {
+                creatureTarget.ResetStuck();
+            }
+            ResetStuck();
+
             // try to resist spell, if applicable
             if (TryResistSpell(target, spell))
             {
