@@ -2174,7 +2174,11 @@ namespace ACE.Server.WorldObjects
 
         public double? ManaRate
         {
-            get => GetProperty(PropertyFloat.ManaRate);
+            get
+            {
+                var itemManaUsageMod = PropertyManager.GetLong("item_mana_usage_mod").Item;
+                return itemManaUsageMod <= 0.0f ? null : GetProperty(PropertyFloat.ManaRate) * itemManaUsageMod;
+            }
             set { if (!value.HasValue) RemoveProperty(PropertyFloat.ManaRate); else SetProperty(PropertyFloat.ManaRate, value.Value); }
         }
 
