@@ -493,6 +493,17 @@ namespace ACE.Server.Network.Structure
             foreach (var enchantment in woEnchantments)
                 SpellBook.Add((uint)enchantment.SpellId | EnchantmentMask);
 
+            var itemManaUsageMod = PropertyManager.GetDouble("item_mana_usage_mod").Item;
+            if (itemManaUsageMod <= 0.0f)
+            {
+                // Remove any mention of mana usage on the item if mana usage is disabled
+
+                PropertiesFloat.Remove(PropertyFloat.ManaRate);
+                PropertiesInt.Remove(PropertyInt.ItemCurMana);
+                PropertiesInt.Remove(PropertyInt.ItemMaxMana);
+                PropertiesInt.Remove(PropertyInt.ItemManaCost);
+            }
+
             // show auras from wielder, if applicable
 
             // this technically wasn't a feature in retail

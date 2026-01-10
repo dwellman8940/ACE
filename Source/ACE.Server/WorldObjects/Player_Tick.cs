@@ -625,6 +625,12 @@ namespace ACE.Server.WorldObjects
         {
             if (!EquippedObjectsLoaded) return;
 
+            var itemManaUsageMod = PropertyManager.GetDouble("item_mana_usage_mod").Item;
+            if (itemManaUsageMod <= 0.0f)
+            {
+                return;
+            }
+
             foreach (var item in EquippedObjects.Values)
             {
                 if (!item.IsAffecting)
@@ -633,7 +639,7 @@ namespace ACE.Server.WorldObjects
                 if (item.ItemCurMana == null || item.ItemMaxMana == null || item.ManaRate == null)
                     continue;
 
-                var burnRate = -item.ManaRate.Value;
+                var burnRate = -item.ManaRate.Value * itemManaUsageMod;
 
                 if (LumAugItemManaUsage != 0)
                     burnRate *= GetNegativeRatingMod(LumAugItemManaUsage * 5);
